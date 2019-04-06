@@ -3,7 +3,6 @@ package com.izeye.contest.googlecodejam2019.qr.problem3;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -35,36 +34,43 @@ public class Solution {
 
 				String ciphertext = br.readLine();
 				String[] values = ciphertext.split(" ");
-				BigInteger firstValue = new BigInteger(values[0]);
-				BigInteger secondValue = new BigInteger(values[1]);
+				Long firstValue = new Long(values[0]);
+				Long secondValue = new Long(values[1]);
 
-				BigInteger secondPrime = firstValue.gcd(secondValue);
-				BigInteger firstPrime = firstValue.divide(secondPrime);
-				BigInteger thirdPrime = secondValue.divide(secondPrime);
+				Long secondPrime = gcd(firstValue, secondValue);
+				Long firstPrime = firstValue / secondPrime;
+				Long thirdPrime = secondValue / secondPrime;
 
-				List<BigInteger> primes = new ArrayList<>();
+				List<Long> primes = new ArrayList<>();
 				primes.add(firstPrime);
 				primes.add(secondPrime);
 				primes.add(thirdPrime);
 				for (int j = 2; j < values.length; j++) {
-					BigInteger value = new BigInteger(values[j]);
-					BigInteger prime = value.divide(primes.get(primes.size() - 1));
+					Long value = new Long(values[j]);
+					Long prime = value / primes.get(primes.size() - 1);
 					primes.add(prime);
 				}
-				SortedSet<BigInteger> sortedPrimes = new TreeSet<>(primes);
-				SortedMap<BigInteger, Character> alphabetByPrime = new TreeMap<>();
+				SortedSet<Long> sortedPrimes = new TreeSet<>(primes);
+				SortedMap<Long, Character> alphabetByPrime = new TreeMap<>();
 				char c = 'A';
-				for (BigInteger prime : sortedPrimes) {
+				for (Long prime : sortedPrimes) {
 					alphabetByPrime.put(prime, c);
 					c++;
 				}
 				StringBuilder plaintext = new StringBuilder();
-				for (BigInteger prime : primes) {
+				for (Long prime : primes) {
 					plaintext.append(alphabetByPrime.get(prime));
 				}
 				System.out.printf("Case #%d: %s%n", i + 1, plaintext);
 			}
 		}
+	}
+
+	private static Long gcd(Long first, Long second) {
+		if (second == 0) {
+			return first;
+		}
+		return gcd(second, first % second);
 	}
 
 }
